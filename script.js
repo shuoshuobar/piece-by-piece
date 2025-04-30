@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const gridContainer = document.getElementById('gridContainer');
     const resetBtn = document.getElementById('resetBtn');
+    const animateBtn = document.getElementById('animateBtn'); // New animate button
     
     // Cover image setup
     const coverImageUrl = 'cover.JPG';
@@ -76,6 +77,31 @@ document.addEventListener('DOMContentLoaded', function() {
         shuffleArray(shuffledPhotos);
         const photosToUse = shuffledPhotos.slice(0, Math.min(12, shuffledPhotos.length));
         photoIndex = 0;
+    });
+
+    // Animate button functionality
+    animateBtn.addEventListener('click', function() {
+        const hiddenImages = document.querySelectorAll('.hidden-image');
+        let index = 0;
+
+        function revealNext() {
+            if (index < hiddenImages.length) {
+                const img = hiddenImages[index];
+                if (!img.classList.contains('revealed')) {
+                    if (photoIndex < photosToUse.length) {
+                        const photoUrl = photosToUse[photoIndex];
+                        img.src = photoUrl;
+                        img.classList.add('revealed');
+                        photoIndex++;
+                    }
+                }
+                index++;
+                setTimeout(revealNext, 1000); // 1 second delay
+            }
+        }
+
+        photoIndex = 0; // Reset photo index for animation
+        revealNext(); // Start the animation
     });
     
     // Function to shuffle an array (Fisher-Yates algorithm)
