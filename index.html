@@ -10,7 +10,18 @@
     <h1>Piece by Piece</h1>
     <div class="grid-container" id="gridContainer"></div>
     <button class="reset-btn" id="resetBtn">Reset Grid</button>
-    <button class="reset-btn" id="animateBtn">Animate</button> <!-- Added Animate button -->
+    <button class="reset-btn" id="animateBtn">Animate</button>
+    
+    <!-- Popup Window -->
+    <div class="popup" id="completionPopup">
+        <div class="popup-content">
+            <div class="popup-decor"></div>
+            <h2 class="popup-heading">Congratulations!</h2>
+            <p class="popup-message">You've discovered all the pieces! The memory project is now complete.</p>
+            <a href="https://www.amazon.com/Piece-Picking-Whats-Left-Behind-ebook/dp/B0F79VCXDS/" class="popup-link" target="_blank">View Full Collection</a>
+            <button class="popup-close" id="popupCloseBtn">&times;</button>
+        </div>
+    </div>
     
     <script src="script.js"></script>
 </body>
