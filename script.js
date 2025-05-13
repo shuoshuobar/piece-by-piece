@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const popupCloseBtn = document.getElementById('popupCloseBtn');
     
     // Cover image setup
-    const coverImageUrl = 'cover.jpg';
+    const coverImageUrl = 'cover-image.jpg';
     
     // This is a list of all the images in your photos directory
     const allPhotos = [
