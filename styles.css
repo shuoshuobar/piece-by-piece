@@ -17,10 +17,10 @@ h1 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(4, 1fr);
-    gap: 2px;
+    gap: 0; /* Remove the gap between grid items */
     width: 600px;
     height: 800px;
-    background-color: #333;
+    background-color: white; /* Match the background color to the border color */
     position: relative;
     overflow: hidden;
 }
@@ -31,12 +31,14 @@ h1 {
     cursor: pointer;
     background-size: 300% 400%;
     transition: transform 0.3s ease;
+    border: 2px solid white; /* Increase border thickness and ensure it's white */
 }
 
 .grid-item:hover {
     transform: scale(1.02);
 }
 
+/* Add animation for revealed images */
 .hidden-image {
     position: absolute;
     top: 0;
@@ -44,12 +46,29 @@ h1 {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0;
-    transition: opacity 0.5s ease;
+    opacity: 0; /* Start hidden */
+    transition: opacity 1.3s ease; /* Smooth fade-in and fade-out */
 }
 
-.revealed {
-    opacity: 1;
+.hidden-image.revealed {
+    opacity: 1; /* Fully visible */
+}
+
+/* Optional: Add a slight delay for specific positions to make the animation more dynamic */
+.grid-item:nth-child(4) .hidden-image.revealed {
+    transition-delay: 0.1s;
+}
+.grid-item:nth-child(6) .hidden-image.revealed {
+    transition-delay: 0.2s;
+}
+.grid-item:nth-child(10) .hidden-image.revealed {
+    transition-delay: 0.3s;
+}
+.grid-item:nth-child(11) .hidden-image.revealed {
+    transition-delay: 0.4s;
+}
+.grid-item:nth-child(12) .hidden-image.revealed {
+    transition-delay: 0.5s;
 }
 
 .reset-btn {
@@ -66,4 +85,152 @@ h1 {
 
 .reset-btn:hover {
     background-color: #2980b9;
+}
+
+/* Add these styles to your existing CSS file */
+
+/* Popup Container */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.popup.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Popup Content */
+.popup-content {
+  position: relative;
+  width: 400px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 15px;
+  padding: 40px 30px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  transform: scale(0.8);
+  transition: transform 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  overflow: hidden;
+}
+
+.popup.show .popup-content {
+  transform: scale(1);
+}
+
+/* Decorative Element */
+.popup-decor {
+  position: absolute;
+  top: -50px;
+  left: -50px;
+  width: 150px;
+  height: 150px;
+  background: linear-gradient(45deg, #3498db, #2ecc71);
+  border-radius: 50%;
+  opacity: 0.4;
+}
+
+.popup-decor::before {
+  content: '';
+  position: absolute;
+  bottom: -50px;
+  right: -80px;
+  width: 180px;
+  height: 180px;
+  background: linear-gradient(45deg, #e74c3c, #f39c12);
+  border-radius: 50%;
+  opacity: 0.3;
+}
+
+/* Popup Heading */
+.popup-heading {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 28px;
+  position: relative;
+}
+
+.popup-heading::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(to right, #3498db, #2ecc71);
+  margin: 10px auto 0;
+}
+
+/* Popup Message */
+.popup-message {
+  color: #555;
+  margin-bottom: 30px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Popup Link */
+.popup-link {
+  display: inline-block;
+  padding: 12px 30px;
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  color: white;
+  text-decoration: none;
+  border-radius: 30px;
+  font-weight: bold;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+  margin-bottom: 20px;
+}
+
+.popup-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(52, 152, 219, 0.6);
+}
+
+.popup-link:active {
+  transform: translateY(0);
+}
+
+/* Close Button */
+.popup-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: white;
+  border: none;
+  color: #555;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.popup-close:hover {
+  background-color: #f8f8f8;
+  transform: rotate(90deg);
+}
+
+/* Add animation to the popup content */
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+}
+
+.popup-link {
+  animation: pulse 2s infinite;
 }
