@@ -1,15 +1,15 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const gridContainer = document.getElementById('gridContainer');
     const resetBtn = document.getElementById('resetBtn');
-    const animateBtn = document.getElementById('animateBtn'); // New animate button
+    const animateBtn = document.getElementById('animateBtn');
+    const popup = document.getElementById('completionPopup');
+    const popupCloseBtn = document.getElementById('popupCloseBtn');
     
     // Cover image setup
     const coverImageUrl = 'cover.JPG';
     
     // This is a list of all the images in your photos directory
-    // You'll need to manually list your photos here
     const allPhotos = [
-        // Replace these with the actual paths to your images in the photos folder
         'photos/Ailing Li.jpg',
         'photos/Ayana Garcia.jpg',
         'photos/Ayushee_MemProjPhoto.png',
@@ -23,16 +23,20 @@ document.addEventListener('DOMContentLoaded', function() {
         'photos/Shiyu Yu.jpg',
         'photos/Stephanie Rodriguez.jpg',
         'photos/Yushuo Wang.jpeg',
+        'photos/Maddy.jpg', // Added the new photo
     ];
     
-    // Shuffle all photos and select exactly 12 (or as many as available if less than 12)
+    // Shuffle all photos
     const shuffledPhotos = [...allPhotos];
     shuffleArray(shuffledPhotos);
-    
-    // Take only up to 12 photos
-    const photosToUse = shuffledPhotos.slice(0, Math.min(12, shuffledPhotos.length));
-    let photoIndex = 0;
-    
+
+    // Queue to track photos to be revealed
+    const photoQueue = [...shuffledPhotos]; // Copy all photos into a queue
+    const specificPositions = [4, 6, 10, 11, 12];
+    const photoMap = new Map();
+
+    let animationInterval; // Variable to store the interval ID
+
     // Create grid items (3x4 grid)
     for (let row = 0; row < 4; row++) {
         for (let col = 0; col < 3; col++) {
@@ -49,61 +53,81 @@ document.addEventListener('DOMContentLoaded', function() {
             hiddenImage.alt = 'Hidden photo';
             
             gridItem.appendChild(hiddenImage);
-            
-            // Add click event to reveal the image
-            gridItem.addEventListener('click', function() {
-                if (!hiddenImage.classList.contains('revealed') && photoIndex < photosToUse.length) {
-                    // Get the next photo from the array
-                    const photoUrl = photosToUse[photoIndex];
-                    photoIndex++;
-                    
-                    hiddenImage.src = photoUrl;
-                    hiddenImage.classList.add('revealed');
-                }
-            });
-            
             gridContainer.appendChild(gridItem);
         }
     }
-    
+
     // Reset button functionality
-    resetBtn.addEventListener('click', function() {
+    resetBtn.addEventListener('click', function () {
         // Hide all revealed images
         document.querySelectorAll('.hidden-image').forEach(img => {
             img.classList.remove('revealed');
+            img.src = ''; // Clear the image source
         });
-        
-        // Reshuffle the photos
+
+        // Reset the photo queue
         shuffleArray(shuffledPhotos);
-        const photosToUse = shuffledPhotos.slice(0, Math.min(12, shuffledPhotos.length));
-        photoIndex = 0;
+        photoQueue.length = 0;
+        photoQueue.push(...shuffledPhotos);
+
+        // Stop animation if running
+        clearInterval(animationInterval);
+        
+        // Hide popup if visible
+        popup.classList.remove('show');
     });
 
     // Animate button functionality
-    animateBtn.addEventListener('click', function() {
-        const hiddenImages = document.querySelectorAll('.hidden-image');
-        let index = 0;
+    animateBtn.addEventListener('click', function () {
+        clearInterval(animationInterval);
 
-        function revealNext() {
-            if (index < hiddenImages.length) {
-                const img = hiddenImages[index];
-                if (!img.classList.contains('revealed')) {
-                    if (photoIndex < photosToUse.length) {
-                        const photoUrl = photosToUse[photoIndex];
-                        img.src = photoUrl;
-                        img.classList.add('revealed');
-                        photoIndex++;
-                    }
-                }
-                index++;
-                setTimeout(revealNext, 1000); // 1 second delay
+        let currentIndex = 0;
+        let revealedCount = 0;
+        const totalImages = allPhotos.length;
+
+        animationInterval = setInterval(() => {
+            // Get the current position
+            const pos = specificPositions[currentIndex];
+            const gridItem = gridContainer.children[pos - 1];
+            const hiddenImage = gridItem.querySelector('.hidden-image');
+
+            // Get the next photo from the queue
+            if (photoQueue.length > 0) {
+                const photoUrl = photoQueue.shift(); // Remove the first photo from the queue
+                hiddenImage.src = photoUrl;
+                hiddenImage.classList.add('revealed');
+                revealedCount++;
             }
-        }
 
-        photoIndex = 0; // Reset photo index for animation
-        revealNext(); // Start the animation
+            // Check if all photos have been revealed
+            if (photoQueue.length === 0) {
+                clearInterval(animationInterval); // Stop the animation
+                
+                // Show the popup instead of alert
+                setTimeout(() => {
+                    popup.classList.add('show');
+                }, 1500); // Wait a bit after the last image is revealed
+            }
+
+            setTimeout(() => {
+                hiddenImage.classList.remove('revealed');
+                currentIndex = (currentIndex + 1) % specificPositions.length;
+            }, 1300);
+        }, 1800);
     });
     
+    // Close popup when the close button is clicked
+    popupCloseBtn.addEventListener('click', function() {
+        popup.classList.remove('show');
+    });
+    
+    // Also close popup when clicking outside the popup content
+    popup.addEventListener('click', function(e) {
+        if (e.target === popup) {
+            popup.classList.remove('show');
+        }
+    });
+
     // Function to shuffle an array (Fisher-Yates algorithm)
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
