@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'photos/Shiyu Yu.jpg',
         'photos/Stephanie Rodriguez.jpg',
         'photos/Yushuo Wang.jpeg',
-        'photos/Maddy.jpg', // Added the new photo
+        'photos/Maddy.jpg',
     ];
     
     // Shuffle all photos
@@ -32,9 +32,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Queue to track photos to be revealed
     const photoQueue = [...shuffledPhotos]; // Copy all photos into a queue
-    const specificPositions = [4, 6, 10, 11, 12];
-    const photoMap = new Map();
-
+    
+    // Define position sequence - the pattern for showing photos
+    // For the first two rounds, use all 5 positions
+    // For the last round, skip position 11 for the final photo
+    const positions = [4, 6, 10, 11, 12]; // Positions to use
+    
     let animationInterval; // Variable to store the interval ID
 
     // Create grid items (3x4 grid)
@@ -81,37 +84,53 @@ document.addEventListener('DOMContentLoaded', function () {
     animateBtn.addEventListener('click', function () {
         clearInterval(animationInterval);
 
-        let currentIndex = 0;
-        let revealedCount = 0;
-        const totalImages = allPhotos.length;
+        let photoIndex = 0; // Track which photo we're on (0-13)
+        const totalPhotos = allPhotos.length;
+
+        // Function to determine which position to use based on the photo index
+        function getPositionForPhoto(index) {
+            if (index < 10) {
+                // First two rounds: use positions in sequence
+                return positions[index % 5];
+            } else {
+                // Last round: special handling
+                switch (index) {
+                    case 10: return 4;  // Photo 11 at position 4
+                    case 11: return 6;  // Photo 12 at position 6
+                    case 12: return 10; // Photo 13 at position 10
+                    case 13: return 12; // Photo 14 at position 12 (skip position 11)
+                    default: return positions[index % 5];
+                }
+            }
+        }
 
         animationInterval = setInterval(() => {
-            // Get the current position
-            const pos = specificPositions[currentIndex];
-            const gridItem = gridContainer.children[pos - 1];
-            const hiddenImage = gridItem.querySelector('.hidden-image');
-
-            // Get the next photo from the queue
-            if (photoQueue.length > 0) {
-                const photoUrl = photoQueue.shift(); // Remove the first photo from the queue
-                hiddenImage.src = photoUrl;
-                hiddenImage.classList.add('revealed');
-                revealedCount++;
-            }
-
-            // Check if all photos have been revealed
-            if (photoQueue.length === 0) {
-                clearInterval(animationInterval); // Stop the animation
+            if (photoIndex >= totalPhotos) {
+                clearInterval(animationInterval);
                 
-                // Show the popup instead of alert
+                // Show the popup
                 setTimeout(() => {
                     popup.classList.add('show');
-                }, 1500); // Wait a bit after the last image is revealed
+                }, 1500);
+                
+                return;
             }
+
+            // Get the position for the current photo
+            const pos = getPositionForPhoto(photoIndex);
+            const gridItem = gridContainer.children[pos - 1];
+            const hiddenImage = gridItem.querySelector('.hidden-image');
+            
+            // Get the photo to display
+            const photoUrl = photoQueue[photoIndex];
+            hiddenImage.src = photoUrl;
+            hiddenImage.classList.add('revealed');
+            
+            // Increment to the next photo
+            photoIndex++;
 
             setTimeout(() => {
                 hiddenImage.classList.remove('revealed');
-                currentIndex = (currentIndex + 1) % specificPositions.length;
             }, 1300);
         }, 1800);
     });
