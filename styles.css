@@ -1,93 +1,102 @@
+/* Main Styles */
 body {
-    margin: 0;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #f0f0f0;
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f0f0f0;
+  min-height: 100vh;
+  position: relative;
 }
 
 h1 {
-    color: #333;
-    margin-bottom: 20px;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
+/* Grid Container */
 .grid-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(4, 1fr);
-    gap: 0; /* Remove the gap between grid items */
-    width: 600px;
-    height: 800px;
-    background-color: white; /* Match the background color to the border color */
-    position: relative;
-    overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 0;
+  width: 85%;
+  max-width: 500px;
+  height: auto;
+  aspect-ratio: 3/4;
+  background-color: white;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto;
+  border: 1px solid #ddd;
 }
 
+/* Grid Items */
 .grid-item {
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    background-size: 300% 400%;
-    transition: transform 0.3s ease;
-    border: 2px solid white; /* Increase border thickness and ensure it's white */
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background-size: 300% 400%;
+  transition: transform 0.3s ease;
+  border: 1px solid #eee;
+  aspect-ratio: 1/1;
 }
 
 .grid-item:hover {
-    transform: scale(1.02);
+  transform: scale(1.02);
 }
 
-/* Add animation for revealed images */
 .hidden-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0; /* Start hidden */
-    transition: opacity 1.3s ease; /* Smooth fade-in and fade-out */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.3s ease;
 }
 
 .hidden-image.revealed {
-    opacity: 1; /* Fully visible */
+  opacity: 1;
 }
 
-/* Optional: Add a slight delay for specific positions to make the animation more dynamic */
+/* Animation Delays */
 .grid-item:nth-child(4) .hidden-image.revealed {
-    transition-delay: 0.1s;
+  transition-delay: 0.1s;
 }
 .grid-item:nth-child(6) .hidden-image.revealed {
-    transition-delay: 0.2s;
+  transition-delay: 0.2s;
 }
 .grid-item:nth-child(10) .hidden-image.revealed {
-    transition-delay: 0.3s;
+  transition-delay: 0.3s;
 }
 .grid-item:nth-child(11) .hidden-image.revealed {
-    transition-delay: 0.4s;
+  transition-delay: 0.4s;
 }
 .grid-item:nth-child(12) .hidden-image.revealed {
-    transition-delay: 0.5s;
+  transition-delay: 0.5s;
 }
 
+/* Buttons */
 .reset-btn {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
 }
 
 .reset-btn:hover {
-    background-color: #2980b9;
+  background-color: #2980b9;
 }
-
-/* Add these styles to your existing CSS file */
 
 /* Popup Container */
 .popup {
@@ -97,7 +106,7 @@ h1 {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 1000;
@@ -107,6 +116,7 @@ h1 {
 }
 
 .popup.show {
+  display: flex;
   opacity: 1;
   visibility: visible;
 }
@@ -114,7 +124,8 @@ h1 {
 /* Popup Content */
 .popup-content {
   position: relative;
-  width: 400px;
+  width: 90%;
+  max-width: 400px;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   border-radius: 15px;
   padding: 40px 30px;
@@ -122,14 +133,14 @@ h1 {
   text-align: center;
   transform: scale(0.8);
   transition: transform 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-  overflow: hidden;
+  margin: 20px;
 }
 
 .popup.show .popup-content {
   transform: scale(1);
 }
 
-/* Decorative Element */
+/* Popup Decorations */
 .popup-decor {
   position: absolute;
   top: -50px;
@@ -153,7 +164,7 @@ h1 {
   opacity: 0.3;
 }
 
-/* Popup Heading */
+/* Popup Text Elements */
 .popup-heading {
   color: #333;
   margin-bottom: 20px;
@@ -170,7 +181,6 @@ h1 {
   margin: 10px auto 0;
 }
 
-/* Popup Message */
 .popup-message {
   color: #555;
   margin-bottom: 30px;
@@ -178,7 +188,6 @@ h1 {
   line-height: 1.6;
 }
 
-/* Popup Link */
 .popup-link {
   display: inline-block;
   padding: 12px 30px;
@@ -201,7 +210,7 @@ h1 {
   transform: translateY(0);
 }
 
-/* Close Button */
+/* Popup Close Button */
 .popup-close {
   position: absolute;
   top: 15px;
@@ -224,7 +233,7 @@ h1 {
   transform: rotate(90deg);
 }
 
-/* Add animation to the popup content */
+/* Animations */
 @keyframes pulse {
   0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
   70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
@@ -233,4 +242,40 @@ h1 {
 
 .popup-link {
   animation: pulse 2s infinite;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  .grid-container {
+      width: 90%;
+      max-width: 450px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .grid-container {
+      width: 95%;
+      max-width: 350px;
+  }
+  
+  h1 {
+      font-size: 22px;
+  }
+  
+  .popup-content {
+      padding: 30px 20px;
+  }
+  
+  .popup-heading {
+      font-size: 24px;
+  }
+  
+  .popup-message {
+      font-size: 14px;
+  }
+  
+  .popup-link {
+      padding: 10px 20px;
+      font-size: 14px;
+  }
 }
