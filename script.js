@@ -34,11 +34,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const photoQueue = [...shuffledPhotos]; // Copy all photos into a queue
     
     // Define position sequence - the pattern for showing photos
-    // For the first two rounds, use all 5 positions
-    // For the last round, skip position 11 for the final photo
     const positions = [4, 6, 10, 11, 12]; // Positions to use
     
     let animationInterval; // Variable to store the interval ID
+
+    // Initialize popup as hidden
+    popup.style.display = 'none';
 
     // Create grid items (3x4 grid)
     for (let row = 0; row < 4; row++) {
@@ -76,7 +77,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Stop animation if running
         clearInterval(animationInterval);
         
-        // Hide popup if visible
+        // Hide popup
+        popup.style.display = 'none';
         popup.classList.remove('show');
     });
 
@@ -110,7 +112,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 // Show the popup
                 setTimeout(() => {
-                    popup.classList.add('show');
+                    popup.style.display = 'flex';
+                    setTimeout(() => {
+                        popup.classList.add('show');
+                    }, 10);
                 }, 1500);
                 
                 return;
@@ -137,12 +142,14 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // Close popup when the close button is clicked
     popupCloseBtn.addEventListener('click', function() {
+        popup.style.display = 'none';
         popup.classList.remove('show');
     });
     
     // Also close popup when clicking outside the popup content
     popup.addEventListener('click', function(e) {
         if (e.target === popup) {
+            popup.style.display = 'none';
             popup.classList.remove('show');
         }
     });
