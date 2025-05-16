@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Cover image setup
     const coverImageUrl = 'cover-image.jpg';
     
-    // This is a list of all the images in your photos directory
+    // Photo list
     const allPhotos = [
         'photos/Ailing Li.jpg',
         'photos/Ayana Garcia.jpg',
@@ -26,32 +26,24 @@ document.addEventListener('DOMContentLoaded', function () {
         'photos/Maddy.jpg',
     ];
     
-    // Shuffle all photos
+    // Initialize
     const shuffledPhotos = [...allPhotos];
     shuffleArray(shuffledPhotos);
-
-    // Queue to track photos to be revealed
-    const photoQueue = [...shuffledPhotos]; // Copy all photos into a queue
+    const photoQueue = [...shuffledPhotos];
+    const positions = [4, 6, 10, 11, 12];
+    let animationInterval;
     
-    // Define position sequence - the pattern for showing photos
-    const positions = [4, 6, 10, 11, 12]; // Positions to use
-    
-    let animationInterval; // Variable to store the interval ID
-
-    // Initialize popup as hidden
+    // Hide popup initially
     popup.style.display = 'none';
 
-    // Create grid items (3x4 grid)
+    // Create grid
     for (let row = 0; row < 4; row++) {
         for (let col = 0; col < 3; col++) {
             const gridItem = document.createElement('div');
             gridItem.className = 'grid-item';
             gridItem.style.backgroundImage = `url(${coverImageUrl})`;
-            
-            // Position the background image to show only the current grid section
             gridItem.style.backgroundPosition = `${col * 50}% ${row * 33.33}%`;
             
-            // Create hidden image that will be revealed on click
             const hiddenImage = document.createElement('img');
             hiddenImage.className = 'hidden-image';
             hiddenImage.alt = 'Hidden photo';
@@ -61,100 +53,69 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Reset button functionality
-    resetBtn.addEventListener('click', function () {
-        // Hide all revealed images
+    // Button handlers
+    resetBtn.addEventListener('click', resetGrid);
+    animateBtn.addEventListener('click', startAnimation);
+    popupCloseBtn.addEventListener('click', closePopup);
+    popup.addEventListener('click', function(e) {
+        if (e.target === popup) closePopup();
+    });
+
+    function resetGrid() {
         document.querySelectorAll('.hidden-image').forEach(img => {
             img.classList.remove('revealed');
-            img.src = ''; // Clear the image source
+            img.src = '';
         });
-
-        // Reset the photo queue
         shuffleArray(shuffledPhotos);
         photoQueue.length = 0;
         photoQueue.push(...shuffledPhotos);
-
-        // Stop animation if running
         clearInterval(animationInterval);
-        
-        // Hide popup
-        popup.style.display = 'none';
-        popup.classList.remove('show');
-    });
+        closePopup();
+    }
 
-    // Animate button functionality
-    animateBtn.addEventListener('click', function () {
+    function startAnimation() {
         clearInterval(animationInterval);
-
-        let photoIndex = 0; // Track which photo we're on (0-13)
+        let photoIndex = 0;
         const totalPhotos = allPhotos.length;
-
-        // Function to determine which position to use based on the photo index
-        function getPositionForPhoto(index) {
-            if (index < 10) {
-                // First two rounds: use positions in sequence
-                return positions[index % 5];
-            } else {
-                // Last round: special handling
-                switch (index) {
-                    case 10: return 4;  // Photo 11 at position 4
-                    case 11: return 6;  // Photo 12 at position 6
-                    case 12: return 10; // Photo 13 at position 10
-                    case 13: return 12; // Photo 14 at position 12 (skip position 11)
-                    default: return positions[index % 5];
-                }
-            }
-        }
 
         animationInterval = setInterval(() => {
             if (photoIndex >= totalPhotos) {
                 clearInterval(animationInterval);
-                
-                // Show the popup
                 setTimeout(() => {
                     popup.style.display = 'flex';
-                    setTimeout(() => {
-                        popup.classList.add('show');
-                    }, 10);
+                    setTimeout(() => popup.classList.add('show'), 10);
                 }, 1500);
-                
                 return;
             }
 
-            // Get the position for the current photo
             const pos = getPositionForPhoto(photoIndex);
             const gridItem = gridContainer.children[pos - 1];
             const hiddenImage = gridItem.querySelector('.hidden-image');
             
-            // Get the photo to display
-            const photoUrl = photoQueue[photoIndex];
-            hiddenImage.src = photoUrl;
+            hiddenImage.src = photoQueue[photoIndex];
             hiddenImage.classList.add('revealed');
             
-            // Increment to the next photo
             photoIndex++;
-
-            setTimeout(() => {
-                hiddenImage.classList.remove('revealed');
-            }, 1300);
+            setTimeout(() => hiddenImage.classList.remove('revealed'), 1300);
         }, 1800);
-    });
-    
-    // Close popup when the close button is clicked
-    popupCloseBtn.addEventListener('click', function() {
+    }
+
+    function getPositionForPhoto(index) {
+        if (index < 10) return positions[index % 5];
+        switch (index) {
+            case 10: return 4;
+            case 11: return 6;
+            case 12: return 10;
+            case 13: return 12;
+            default: return positions[index % 5];
+        }
+    }
+
+    function closePopup() {
         popup.style.display = 'none';
         popup.classList.remove('show');
-    });
-    
-    // Also close popup when clicking outside the popup content
-    popup.addEventListener('click', function(e) {
-        if (e.target === popup) {
-            popup.style.display = 'none';
-            popup.classList.remove('show');
-        }
-    });
+    }
 
-    // Function to shuffle an array (Fisher-Yates algorithm)
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
